@@ -110,7 +110,12 @@ Após a execução, a aplicação estará disponível em `http://localhost:8000`
 -   Na página do painel, clique em "Escolher arquivo", selecione um arquivo `.geojson` do seu computador e clique em "Upload".
 -   A nova camada aparecerá na lista de camadas existentes.
 
+
 ### 2. Visualizando o Mapa
 
 -   Acesse a página principal da aplicação em: **[http://localhost:8000/](http://localhost:8000/)**
 -   O mapa será exibido, carregando e mostrando todas as camadas que foram adicionadas através do painel de administração.
+
+<img width="1865" height="996" alt="image" src="https://github.com/user-attachments/assets/63774577-613e-4f26-90c8-f3ef3baa31fb" />
+
+<img width="1865" height="996" alt="image" src="https://github.com/user-attachments/assets/16b09058-8f42-4174-bc8d-b00e23e3d0eb" />

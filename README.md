@@ -13,8 +13,9 @@ O projeto é dividido em duas partes principais:
 
 -   **Backend**: PHP 8.2+ / Laravel 11
 -   **Frontend**: Livewire 3, Blade, TailwindCSS, Bootstrap, Vite
--   **Banco de Dados**: SQLite
+-   **Banco de Dados**: PostgreSQL com PostGIS
 -   **Processamento Geoespacial**: `clickbar/laravel-magellan`
+-   **Containerização**: Docker (via Laravel Sail)
 
 ---
 
@@ -27,6 +28,7 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente de de
 -   PHP >= 8.2
 -   Composer
 -   Node.js e NPM
+-   Docker e Docker Compose (para execução com containers)
 
 ### Instalação
 
@@ -58,9 +60,23 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente de de
     php artisan key:generate
     ```
 
-5.  **Crie o arquivo do banco de dados SQLite:**
+5.  **Configure o arquivo de ambiente:**
+    -   Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`.
+    -   Defina uma senha para o painel de administração no arquivo `.env`, na variável `PANEL_PASSWORD`.
+    -   Configure as variáveis de banco de dados para PostgreSQL (ou use os valores padrão do Docker).
+
     ```bash
-    touch database/database.sqlite
+    cp .env.example .env
+    ```
+    *Edite o arquivo `.env` e adicione/defina:*
+    ```
+    PANEL_PASSWORD=sua-senha-segura
+    DB_CONNECTION=pgsql
+    DB_HOST=pgsql
+    DB_PORT=5432
+    DB_DATABASE=laravel
+    DB_USERNAME=sail
+    DB_PASSWORD=password
     ```
 
 6.  **Execute as migrações do banco de dados:**
@@ -77,15 +93,30 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente de de
 
 Para iniciar o servidor de desenvolvimento e o compilador de assets, você pode executar os comandos separadamente ou usar o script `dev` configurado no `composer.json`.
 
-**Opção 1: Comando unificado (Recomendado)**
+**Opção 1: Usando Docker (Recomendado)**
 
-Este comando irá iniciar o servidor PHP, o processo da fila, o log e o Vite simultaneamente.
+Este método usa Laravel Sail para executar a aplicação em containers Docker, incluindo PostgreSQL com PostGIS.
+
+```bash
+# Inicie os containers
+./vendor/bin/sail up
+
+# Em outro terminal, execute as migrações (se não foram executadas)
+./vendor/bin/sail artisan migrate
+
+# Para parar os containers
+./vendor/bin/sail down
+```
+
+**Opção 2: Comando unificado (Sem Docker)**
+
+Este comando irá iniciar o servidor PHP, o processo da fila, o log e o Vite simultaneamente (requer PostgreSQL local).
 
 ```bash
 composer run-script dev
 ```
 
-**Opção 2: Comandos separados**
+**Opção 3: Comandos separados (Sem Docker)**
 
 Abra dois terminais:
 - No primeiro, inicie o servidor Vite:
@@ -106,16 +137,13 @@ Após a execução, a aplicação estará disponível em `http://localhost:8000`
 ### 1. Adicionando Camadas (Layers)
 
 -   Acesse o painel de administração em: **[http://localhost:8000/painel](http://localhost:8000/painel)**
--   O navegador solicitará uma autenticação (HTTP Basic Auth). Use o usuário `admin` e a senha que você definiu em `PANEL_PASSWORD` no arquivo `.env`.
+-   O navegador solicitará uma autenticação (HTTP Basic Auth). Use o usuário `admin` e a senha que você definiu em `PANEL_PASSWORD` no arquivo `.env` (exemplo: `sua-senha-segura`).
 -   Na página do painel, clique em "Escolher arquivo", selecione um arquivo `.geojson` do seu computador e clique em "Upload".
 -   A nova camada aparecerá na lista de camadas existentes.
-
 
 ### 2. Visualizando o Mapa
 
 -   Acesse a página principal da aplicação em: **[http://localhost:8000/](http://localhost:8000/)**
 -   O mapa será exibido, carregando e mostrando todas as camadas que foram adicionadas através do painel de administração.
 
-<img width="1865" height="996" alt="image" src="https://github.com/user-attachments/assets/63774577-613e-4f26-90c8-f3ef3baa31fb" />
 
-<img width="1865" height="996" alt="image" src="https://github.com/user-attachments/assets/16b09058-8f42-4174-bc8d-b00e23e3d0eb" />
